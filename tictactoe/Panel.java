@@ -2,12 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 public class Panel extends JPanel {
     int SIZE = 420;
     int ESPACEMENT = SIZE/3;
     boolean tour = true;
     char[] cases = new char[9];
+    int score1 = 0;
+    int score2 = 0;
     BottomPanel bottomPanel;
 
     Panel(BottomPanel bottomPanel){
@@ -123,11 +126,37 @@ public class Panel extends JPanel {
     public void checkWinner(){
         // horizontal
         if (cases[0] == cases[1] && cases[1] == cases[2] && cases[0] != '\u0000' || cases[3] == cases[4] && cases[4] == cases[5] && cases[3] != '\u0000' || cases[6] == cases[7] && cases[7] == cases[8] && cases[7] != '\u0000') {
-            if (!tour)
-                System.out.println("Joueur 1 gange");
-            else
-                System.out.println("Joueur 2 gagne");
+            dialog();
         }
+        // vertical
+        if(cases[0] == cases[3] && cases[3] == cases[6] && cases[0] != '\u0000' || cases[1] == cases[4] && cases[4] == cases[7] && cases[7] != '\u0000'
+                || cases[2] == cases[5] && cases[5] == cases[8] && cases[8] != '\u0000' )
+            dialog();
+        // diagonal
+        if (cases[0] == cases[4] && cases[4] == cases[8] && cases[0] != '\u0000' || cases[2] == cases[4] && cases[4] == cases[6] && cases[2] != '\u0000')
+            dialog();
+    }
+
+    public void dialog(){
+        if (!tour) {
+            score1++;
+            JOptionPane.showMessageDialog(getParent(), "Joueur 1 gange");
+        }
+        else {
+            score2++;
+            JOptionPane.showMessageDialog(getParent(), "Joueur 2 gange");
+        }
+        bottomPanel.setText2(score1, score2);
+        int answer = JOptionPane.showConfirmDialog(null, "Voulez vous rejouer ?", "Rematch", JOptionPane.YES_NO_OPTION);
+        if (answer == 0)
+            newGame();
+        if (answer == 1)
+            System.exit(0);
+    }
+
+    public void newGame(){
+        Arrays.fill(cases, '\u0000');
+        repaint();
     }
 
     public void drawGrid(Graphics g){
